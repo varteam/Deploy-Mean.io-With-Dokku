@@ -1,0 +1,117 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Deploy-mean.io-with-dokku by varteam</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1 class="header">Deploy-mean.io-with-dokku</h1>
+        <p class="header">Mean.io 를 dokku 와 함께 관리 배포 하는 방법</p>
+
+        <ul>
+          <li class="download"><a class="buttons" href="https://github.com/varteam/Deploy-Mean.io-With-Dokku/zipball/master">Download ZIP</a></li>
+          <li class="download"><a class="buttons" href="https://github.com/varteam/Deploy-Mean.io-With-Dokku/tarball/master">Download TAR</a></li>
+          <li><a class="buttons github" href="https://github.com/varteam/Deploy-Mean.io-With-Dokku">View On GitHub</a></li>
+        </ul>
+
+        <p class="header">This project is maintained by <a class="header name" href="https://github.com/varteam">varteam</a></p>
+
+
+      </header>
+      <section>
+        <h1>
+<a id="사전-작업" class="anchor" href="#%EC%82%AC%EC%A0%84-%EC%9E%91%EC%97%85" aria-hidden="true"><span class="octicon octicon-link"></span></a>사전 작업</h1>
+
+<p>우분투 설치 [<a href="https://github.com/varteam/Install-Ubuntu14.04">https://github.com/varteam/Install-Ubuntu14.04</a>]</p>
+
+<p>도커 설치 [<a href="https://github.com/varteam/Install-Docker-On-Ubuntu">https://github.com/varteam/Install-Docker-On-Ubuntu</a>]</p>
+
+<p>도쿠 설치 [<a href="https://github.com/varteam/Install-Dokku-on-ubuntu">https://github.com/varteam/Install-Dokku-on-ubuntu</a>]</p>
+
+<h1>
+<a id="deploy-meanio-with-dokku" class="anchor" href="#deploy-meanio-with-dokku" aria-hidden="true"><span class="octicon octicon-link"></span></a>Deploy-Mean.io-With-Dokku</h1>
+
+<p>Mean.io 를 dokku 와 함께 관리 배포 하는 방법</p>
+
+<h2>
+<a id="meanio-소스-다운로드" class="anchor" href="#meanio-%EC%86%8C%EC%8A%A4-%EB%8B%A4%EC%9A%B4%EB%A1%9C%EB%93%9C" aria-hidden="true"><span class="octicon octicon-link"></span></a>mean.io 소스 다운로드</h2>
+
+<pre><code>$ git clone https://github.com/linnovate/mean.git
+</code></pre>
+
+<h2>
+<a id="mongodb-container-와-연결" class="anchor" href="#mongodb-container-%EC%99%80-%EC%97%B0%EA%B2%B0" aria-hidden="true"><span class="octicon octicon-link"></span></a>mongodb container 와 연결</h2>
+
+<pre><code>//서버에서
+// if you didn't start mongodb, you need to start mongodb first($ dokku mongodb:start)
+$ dokku mongodb:create meanio meanio
+$ dokku mongodb:link meanio meanio
+</code></pre>
+
+<h2>
+<a id="dokku-서버와-git-연결" class="anchor" href="#dokku-%EC%84%9C%EB%B2%84%EC%99%80-git-%EC%97%B0%EA%B2%B0" aria-hidden="true"><span class="octicon octicon-link"></span></a>dokku 서버와 git 연결</h2>
+
+<pre><code>//git remote add dokku dokku@&lt;IP Address&gt;:&lt;App Name&gt;
+$ git remote add dokku dokku@abc.com:mean.io
+</code></pre>
+
+<p>그리고 config/env/ 에서 해당 mongodb 환경설정 변경경
+현재는 production.js 파일을 수정 (나중에 NODE_ENV 를 통해서 변경 가능)</p>
+
+<pre><code>'use strict';
+
+module.exports = {
+  db: process.env.MONGO_URI,
+  /**
+   * Database options that will be passed directly to mongoose.connect
+   * Below are some examples.
+   * See http://mongodb.github.io/node-mongodb-native/driver-articles/mongoclient.html#mongoclient-connect-options
+   * and http://mongoosejs.com/docs/connections.html for more information
+   */
+  dbOptions: {
+    /*
+
+    --생략--
+</code></pre>
+
+<h2>
+<a id="dokku-서버로-git-push" class="anchor" href="#dokku-%EC%84%9C%EB%B2%84%EB%A1%9C-git-push" aria-hidden="true"><span class="octicon octicon-link"></span></a>dokku 서버로 git push</h2>
+
+<pre><code>$ git push dokku master
+Counting objects: 7030, done.
+Delta compression using up to 2 threads.
+Compressing objects: 100% (2996/2996), done.
+Writing objects: 100% (7030/7030), 4.00 MiB | 177.00 KiB/s, done.
+Total 7030 (delta 3556), reused 7017 (delta 3547)
+-----&gt; Cleaning up...
+-----&gt; Building meanio from buildstep...
+-----&gt; Adding BUILD_ENV to build environment...
+-----&gt; Node.js app detected
+-----&gt; Requested node range: 0.10.x
+-----&gt; Resolved node version: 0.10.38
+-----&gt; Downloading and installing node
+-----&gt; Exporting config vars to environment
+-----&gt; Installing dependencies
+</code></pre>
+
+<p>--생략--</p>
+      </section>
+      <footer>
+        <p><small>Hosted on <a href="https://pages.github.com">GitHub Pages</a> using the Dinky theme</small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
+		
+  </body>
+</html>
